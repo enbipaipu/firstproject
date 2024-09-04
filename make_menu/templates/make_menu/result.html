@@ -9,10 +9,9 @@
 
 <body>
 
-    {% if selectIngredients %}
+    {% if res %}
     <h1>Results</h1>
-    <p>selectIngredients: {{ selectIngredients }}</p>
-    <p>detail: {{ detail }}</p>
+    <p>{{ res }}</p>
     {% else %}
     <h1>No Data</h1>
     <p>No input data was provided.</p>

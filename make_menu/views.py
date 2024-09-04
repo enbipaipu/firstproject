@@ -7,16 +7,21 @@ from langchain_openai import ChatOpenAI
 # Create your views here.
 def index(request):
     ingredientsInRefrigerator = ["ニンジン", "玉ねぎ", "レタス"]
+    CheaperFoods = ["じゃがいも(-20円)", "キャベツ(-15円)", "ナス(-30円)"]
     request = request
-    context = {"text": "hello world", "foods": ingredientsInRefrigerator}
+    context = {"text": "hello world",
+        "refrigerator": ingredientsInRefrigerator,
+        "cheaper": CheaperFoods,
+    }
     return render(request, "make_menu/index.html", context)
     
     
 def result(request):
     context = ""
     if request.method == 'POST':
-        selectIngredients = request.POST.get('select_ingredients')
-        detail = request.POST.get('detail')
+        cheaper = request.POST.get('select_cheaper')
+        ingredients = request.POST.get('select_ingredients')
+        question = request.POST.get('detail')
         
         # .envファイルの内容を読み込みます
         load_dotenv()
@@ -32,10 +37,13 @@ def result(request):
             )
         
         template = """以下の食材とdetailに沿った献立を考えてください。
-        食材: {context}
+        安くなっている食材: {cheaper}
+        冷蔵庫の中の食材: {ingredients}
         detail: {question}
+        食材はなるべく多く使用してください。
         """
-        order = """回答のフォーマットは以下のようにしてください。料理を３つ提案してください。
+        
+        Input = """回答のフォーマットは以下のようにしてください。料理を３つ提案してください。
         ----
         料理名:料理名
         使用する食材：使用する食材1(冷蔵庫の中にあるor例年より何円安くなっているか)
@@ -48,10 +56,16 @@ def result(request):
         ----
         見やすくするための空白行
         """
-        output_by_simple_llm = llm.invoke(order)
+        response = llm.invoke(template.format(cheaper=cheaper, ingredients=ingredients, question=question))
+        
+        output_by_simple_llm = response.content
+        
+        print(type(response))
+        print(type(output_by_simple_llm))
+        print(output_by_simple_llm)
+        
         context = {
-            "selectIngredients": selectIngredients,
-            "detail": detail,
+            "res": output_by_simple_llm,
         }
 
     return render(request, 'make_menu/result.html', context)

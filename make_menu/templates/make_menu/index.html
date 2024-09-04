@@ -8,8 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script>
-        function toggleInputValue(element, foodName) {
-            var inputField = document.getElementById('input1');
+        function toggleInputValue(element, foodName, inputFieldId) {
+            var inputField = document.getElementById(inputFieldId);
             var currentValue = inputField.value.trim();
             var foodList = currentValue ? currentValue.split(',') : [];
             
@@ -24,6 +24,7 @@
                 }
                 element.setAttribute('data-selected', 'false');
                 element.style.fontWeight = 'normal';  // 例としてスタイルを変更
+                element.style.backgroundColor = 'white';
             } else {
                 // 選択されていない場合、リストに追加
                 if (index === -1) {
@@ -31,6 +32,7 @@
                 }
                 element.setAttribute('data-selected', 'true');
                 element.style.fontWeight = 'bold';  // 例としてスタイルを変更
+                element.style.backgroundColor = 'aqua';
             }
             
             // リストを再度文字列に変換してフィールドに設定
@@ -41,23 +43,41 @@
 
 <body>
     {% if text %}
-    <h1>{{ text }}</h1>
+    <h5>{{ text }}</h5>
     {% endif %}
     
+    {% if refrigerator and cheaper %}
     <form action="{% url 'make_menu:result' %}" method="post">
         {% csrf_token %}
-        <label for="input1">食材を入力してください:</label>
-        <input type="text" id="input1" name="select_ingredients">
         
-        {% for food in foods %}
-        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}')">{{ food }}</span><br>
+        <label for="input1">食材を選んでください:</label>
+        
+        
+        <p>例年より安い食材</p>
+        <!--type="hidden" でinputタグを見えなくしています-->
+        <input type="hidden" id="input1" name="select_cheaper" value="">
+        <br />
+        {% for food in cheaper %}
+        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input1')">{{ food }}</span><br>
         {% endfor %}
         
-        <label for="input2">料理の詳しい情報を入力してください:</label>
-        <input type="text" id="input2" name="detail">
+        
+        
+        <p>冷蔵庫の中にある食材</p>
+        <input type="hidden" id="input2" name="select_refrigerator" value="">
+        <br />
+        {% for food in refrigerator %}
+        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input2')">{{ food }}</span><br>
+        {% endfor %}
+        
+        
+        
+        <label for="input3">料理の詳しい情報を入力してください:</label>
+        <input type="text" id="input3" name="detail">
         
         <button type="submit">Submit</button>
     </form>
+    {% endif %}
 </body>
 
 </html>
