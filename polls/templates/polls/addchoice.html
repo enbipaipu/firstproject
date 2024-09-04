@@ -1,0 +1,25 @@
+<p>
+    <a href="{% url 'polls:detail' question.id %}">投票画面に戻る</a>
+</p>
+
+<h1>選択肢を追加する</h1>
+
+<h3>質問項目</h3>
+
+<div>{{question.question_text}}</div>
+
+<h3>現在の選択肢</h3>
+<ul>
+    {% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }}</li>
+    {% endfor %}
+</ul>
+
+<form action="{% url 'polls:addchoice' question.id %}" method="post">
+    <div>
+        <label for="addchoice">追加する選択肢</label>
+        {% csrf_token %}
+        <input type="text" name="add">
+        <button type="submit">追加</button>
+    </div>
+</form>
