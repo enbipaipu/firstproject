@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Let`s make menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script>
+        function toggleInputValue(element, foodName) {
+            var inputField = document.getElementById('input1');
+            var currentValue = inputField.value.trim();
+            var foodList = currentValue ? currentValue.split(',') : [];
+            
+            // 食材名がすでにリストに存在するかどうかを確認
+            const index = foodList.indexOf(foodName);
+            const isSelected = element.getAttribute('data-selected') === 'true';
+
+            if (isSelected) {
+                // 選択されている場合、リストから削除
+                if (index > -1) {
+                    foodList.splice(index, 1);
+                }
+                element.setAttribute('data-selected', 'false');
+                element.style.fontWeight = 'normal';  // 例としてスタイルを変更
+            } else {
+                // 選択されていない場合、リストに追加
+                if (index === -1) {
+                    foodList.push(foodName);
+                }
+                element.setAttribute('data-selected', 'true');
+                element.style.fontWeight = 'bold';  // 例としてスタイルを変更
+            }
+            
+            // リストを再度文字列に変換してフィールドに設定
+            inputField.value = foodList.join(',').trim();
+        }
+    </script>
+</head>
+
+<body>
+    {% if text %}
+    <h1>{{ text }}</h1>
+    {% endif %}
+    
+    <form action="{% url 'make_menu:result' %}" method="post">
+        {% csrf_token %}
+        <label for="input1">食材を入力してください:</label>
+        <input type="text" id="input1" name="select_ingredients">
+        
+        {% for food in foods %}
+        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}')">{{ food }}</span><br>
+        {% endfor %}
+        
+        <label for="input2">料理の詳しい情報を入力してください:</label>
+        <input type="text" id="input2" name="detail">
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Result Page</title>
+</head>
+
+<body>
+
+    {% if selectIngredients %}
+    <h1>Results</h1>
+    <p>selectIngredients: {{ selectIngredients }}</p>
+    <p>detail: {{ detail }}</p>
+    {% else %}
+    <h1>No Data</h1>
+    <p>No input data was provided.</p>
+    {% endif %}
+
+</body>
+
+</html>
