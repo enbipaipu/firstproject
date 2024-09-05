@@ -53,12 +53,12 @@
         <label for="input1">食材を選んでください:</label>
         
         
-        <p>例年より安い食材</p>
+        <p>例年より安い食材()</p>
         <!--type="hidden" でinputタグを見えなくしています-->
         <input type="hidden" id="input1" name="select_cheaper" value="">
         <br />
         {% for food in cheaper %}
-        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input1')">{{ food }}</span><br>
+        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food.0 }}', 'input1')">{{ food.0 }}:{{ food.1 }}円</span><br>
         {% endfor %}
         
         
