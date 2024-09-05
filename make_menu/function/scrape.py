@@ -10,8 +10,12 @@ def scrape_cookpad(search_query):
     response.close()
 
     recipes = soup.find_all('div', class_='flex-auto m-rg')
-    recipe_list = [str(recipe) for recipe in recipes[:5]]  # 最初の5つのみ取得
+    recipe_links = []
+    for recipe in recipes[:5]:
+        a_tag = recipe.find('a')
+        if a_tag and 'href' in a_tag.attrs:
+            full_url = f'https://cookpad.com{a_tag["href"]}'
+            recipe_links.append(full_url)
+        time.sleep(3)
 
-    time.sleep(3)
-
-    return recipe_list
+    return recipe_links
