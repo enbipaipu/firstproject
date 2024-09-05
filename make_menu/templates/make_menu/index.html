@@ -7,7 +7,105 @@
     <title>Let`s make menu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-          
+    <link rel="stylesheet" href="/firstproject/make_menu/static/make_menu/style.css">
+    
+    <style>
+        /* 全体のスタイル調整 */
+        body {
+            font-family: 'UDShinGoPr6N';
+            background-color: #ffffff;
+            color: #4C4C4C;
+            padding: 20px;
+            margin: 0;
+            font-weight: 700;
+            font-style:normal;
+            font-size:16px;
+        }
+        
+        h5 {
+            font-weight: bold;
+        }
+        
+        h6 {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        
+        /* パソコン版のスタイル（デフォルト） */
+        @media (min-width: 577px) {
+            body {
+                padding-left: 20%;
+                padding-right: 20%;
+            }
+        }
+                
+        /* 詳細情報入力欄のスタイル */
+        input[name="detail"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        
+        /* 食材のスタイル */
+        .food-item {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background-color: #F6B352;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            outline: none;
+            font-weight: normal;
+        }
+        
+        .food-item.selected {
+            font-weight: bold;
+            background-color: #4C4C4C;
+        }
+        
+        .food-item:hover {
+            background-color: #F6B352;
+        }
+        
+        /* 横並びで折り返すスタイル */
+        .food-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px; /* 要素間のスペースを調整 */
+        }
+        
+        /* ボタンのスタイル */
+        .submit-button {
+            background-color: #F6B352;
+            color: white;
+            border: none; /* ボーダーを削除 */
+            padding: 0px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+            margin-top: 20px; /* submitボタンの上に空白を追加 */
+        }
+        
+        .submit-button:hover {
+            background-color: #4C4C4C;
+        }
+            
+            .submit-button {
+                margin-top: 15px; /* スマートフォンでは少し小さめのマージン */
+            }
+            
+    </style>
+    
     <script>
         function toggleInputValue(element, foodName, inputFieldId) {
             var inputField = document.getElementById(inputFieldId);
@@ -16,24 +114,20 @@
             
             // 食材名がすでにリストに存在するかどうかを確認
             const index = foodList.indexOf(foodName);
-            const isSelected = element.getAttribute('data-selected') === 'true';
+            const isSelected = element.classList.contains('selected');
 
             if (isSelected) {
                 // 選択されている場合、リストから削除
                 if (index > -1) {
                     foodList.splice(index, 1);
                 }
-                element.setAttribute('data-selected', 'false');
-                element.style.fontWeight = 'normal';  // 例としてスタイルを変更
-                element.style.backgroundColor = 'white';
+                element.classList.remove('selected');
             } else {
                 // 選択されていない場合、リストに追加
                 if (index === -1) {
                     foodList.push(foodName);
                 }
-                element.setAttribute('data-selected', 'true');
-                element.style.fontWeight = 'bold';  // 例としてスタイルを変更
-                element.style.backgroundColor = 'aqua';
+                element.classList.add('selected');
             }
             
             // リストを再度文字列に変換してフィールドに設定
@@ -43,40 +137,53 @@
 </head>
 
 <body>
+    <img src="images." alt="サンプル画像" width="300" height="200">
+
     {% if text %}
     <h5>{{ text }}</h5>
     {% endif %}
     
-    {% if refrigerator and cheaper %}
+    {% if refrisgerator and cheaper %}
     <form action="{% url 'make_menu:result' %}" method="post">
         {% csrf_token %}
         
         <label for="input1">食材を選んでください:</label>
         
-        
         <p>例年より安い食材</p>
         <!--type="hidden" でinputタグを見えなくしています-->
         <input type="hidden" id="input1" name="select_cheaper" value="">
+        <div class="food-container">
+            {% for food in cheaper %}
+            <span class="food-item" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input1')">{{ food }}</span>
+            {% endfor %}
+        </div>
+        
         <br />
-        {% for food in cheaper %}
-        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input1')">{{ food }}</span><br>
-        {% endfor %}
-        
-        
         
         <p>冷蔵庫の中にある食材</p>
         <input type="hidden" id="input2" name="select_refrigerator" value="">
+        <div class="food-container">
+            {% for food in refrigerator %}
+            <span class="food-item" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input2')">{{ food }}</span>
+            {% endfor %}
+        </div>
+        
         <br />
-        {% for food in refrigerator %}
-        <span class="food-item border border-dark" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input2')">{{ food }}</span><br>
-        {% endfor %}
-        
-        
         
         <label for="input3">料理の詳しい情報を入力してください:</label>
         <input type="text" id="input3" name="detail">
         
-        <button type="submit">Submit</button>
+        <br />
+        <br />
+        
+        <h6>
+        たとえば...<br />
+        「家族で楽しめるパーティ料理」<br />
+        「胃が痛いので胃に優しい料理」<br />
+        「じゃがいも使い切りレシピ」<br />
+        </h6>
+        
+        <button type="submit" class="submit-button">Submit</button>
     </form>
     {% endif %}
 </body>

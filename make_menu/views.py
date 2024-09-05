@@ -9,8 +9,8 @@ def index(request):
     ingredientsInRefrigerator = ["ニンジン", "玉ねぎ", "レタス"]
     CheaperFoods = ["じゃがいも(-20円)", "キャベツ(-15円)", "ナス(-30円)"]
     request = request
-    context = {"text": "hello world",
-        "refrigerator": ingredientsInRefrigerator,
+    context = {"text": "キャロット",
+        "refrisgerator": ingredientsInRefrigerator,
         "cheaper": CheaperFoods,
     }
     return render(request, "make_menu/index.html", context)
