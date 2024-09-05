@@ -107,7 +107,6 @@ def read_csv(request):
                     return float(value) if value else 0
                 
                 # 新規作成または更新
-
                 Average.objects.update_or_create(
                     code=row[0],
                     defaults={
@@ -170,5 +169,4 @@ def scrape(request):
     
     # フォームを表示
     return render(request, 'make_menu/scrape.html')
-  
   
