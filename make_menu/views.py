@@ -69,4 +69,3 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
-
