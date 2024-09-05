@@ -35,6 +35,9 @@ def result(request):
         ingredients = request.POST.get('select_ingredients')
         question = request.POST.get('detail')
         
+        query = cheaper + question + question
+        recipe = read_text_chroma(query)
+        
         # .envファイルの内容を読み込みます
         load_dotenv()
         
@@ -53,6 +56,8 @@ def result(request):
         冷蔵庫の中の食材: {ingredients}
         detail: {question}
         食材はなるべく多く使用してください。
+        これらのレシピも必要であれば、使用してください。
+        {recipe}
         """
         
         Input = """回答のフォーマットは以下のようにしてください。料理を３つ提案してください。
@@ -68,7 +73,7 @@ def result(request):
         ----
         見やすくするための空白行
         """
-        response = llm.invoke(template.format(cheaper=cheaper, ingredients=ingredients, question=question))
+        response = llm.invoke(template.format(cheaper=cheaper, ingredients=ingredients, question=question, recipe=recipe))
         
         output_by_simple_llm = response.content
         
@@ -143,6 +148,7 @@ def add_text(request):
 def read_text(request):
     text = "とまととチーズを使った。子供が喜ぶクリスマス料理"
     result = read_text_chroma(text)
+    print(result)
     return HttpResponse(result)
     
     
