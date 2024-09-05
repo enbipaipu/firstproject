@@ -169,4 +169,3 @@ def scrape(request):
     
     # フォームを表示
     return render(request, 'make_menu/scrape.html')
-  
