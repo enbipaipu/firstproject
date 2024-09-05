@@ -11,7 +11,6 @@ def scrape_anythings(url):
     recipes = []
     recipe = ''
 
-    # 好きなように名前変更してください
     # レシピ名
     recipeName = soup.find('h1', class_='break-words text-cookpad-16 xs:text-cookpad-24 lg:text-cookpad-36 font-semibold leading-tight clear-both')
     # 作者コメント
@@ -23,23 +22,28 @@ def scrape_anythings(url):
     # 作り方のコツ
     advice = soup.find('div', class_='flex flex-col space-y-rg bg-cookpad-white lg:rounded-lg lg:shadow p-rg mb-sm lg:px-0 lg:pt-0 lg:shadow-none lg:pb-md lg:mb-md lg:border-b print:border-none border-cookpad-gray-300 lg:rounded-none print:px-0 print:pb-0')
     # つくれぽ
-    report = soup.find('div', class_='flex flex-col space-y-rg bg-cookpad-white lg:rounded-lg lg:shadow p-rg mb-sm print:hidden lg:px-0 lg:pt-0 lg:shadow-none lg:pb-md lg:mb-md lg:border-b print:border-none border-cookpad-gray-300 lg:rounded-none p-rg')
+    report = soup.find_all('div', class_='flex flex-col space-y-rg bg-cookpad-white lg:rounded-lg lg:shadow p-rg mb-sm print:hidden lg:px-0 lg:pt-0 lg:shadow-none lg:pb-md lg:mb-md lg:border-b print:border-none border-cookpad-gray-300 lg:rounded-none p-rg')
+
     if recipeName:
-        recipe += ('Name:' + (recipeName.text.strip()) + ',') # .strip()で前後の余白を削除
+        recipe += ('Name:' + (recipeName.text.strip()) + ',')
     if autherComment:
         recipe += ('AutherComment:' + (autherComment.text.strip()) + ',')
-    if(material):
+    if material:
         recipe += ('Material:' + (material.text.strip()) + ',')
-    if(how):
+    if how:
         recipe += ('How:' + (how.text.strip()) + ',')
-    if(advice):
+    if advice:
         recipe += ('Advice:' + (advice.text.strip()) + ',')
-    if(report):
-        recipe += ('Report:' + (report.text.strip()))
+
+    if report:
+        report_texts = [r.text.strip() for r in report]
+        recipe += 'Report:' + ','.join(report_texts)
+
     cleaned_recipe = re.sub(r'\n', '', recipe)
     recipes.append(cleaned_recipe)
 
     return recipes
+
 
 def scrape_cookpad(search_query):
     time.sleep(2)
@@ -53,7 +57,7 @@ def scrape_cookpad(search_query):
 
     allRecipe = []
     # ここで持ってくるデータの数を変える
-    for recipe in recipes[:1]:
+    for recipe in recipes[:3]:
         a_tag = recipe.find('a')
         if a_tag and 'href' in a_tag.attrs:
             full_url = f'https://cookpad.com{a_tag["href"]}'
