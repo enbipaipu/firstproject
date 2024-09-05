@@ -3,6 +3,7 @@ from django.db import models
 class Average(models.Model):
     code = models.CharField(max_length=6, unique=True)  # 重複のない単一の6桁のコード
     name = models.CharField(max_length=100)  # 野菜の名前（漢字、ひらがな、カタカナ）
+    g_per_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     # 各月の価格、値がない場合は0にする
     price_01 = models.DecimalField(max_digits=10, decimal_places=2, default=0)
