@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+from .function.scrape import scrape_cookpad
 
 
 # Create your views here.
@@ -69,4 +70,21 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
+
+def scrape(request):
+    if request.method == 'POST':
+        # フォームから入力されたテキストを取得
+        input_text = request.POST.get('input_text')
+        
+        if input_text:
+            # スクレイピング関数を呼び出し
+            scraped_recipes = scrape_cookpad(input_text)
+            
+            if scraped_recipes:
+                # 各要素をHTMLとしてテンプレートに渡す
+                return render(request, 'make_menu/scrape.html', {'recipes': scraped_recipes})
+            else:
+                return render(request, 'make_menu/scrape.html', {'error': 'データが取得できませんでした。'})
     
+    # フォームを表示
+    return render(request, 'make_menu/scrape.html')
