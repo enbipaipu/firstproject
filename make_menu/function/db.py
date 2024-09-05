@@ -24,8 +24,7 @@ def add_text_chroma(texts):
             openai_api_key = os.getenv("OPEN_API_KEY"),
             )
             
-        db = Chroma(persist_directory="DB")
-        db = Chroma.from_texts(texts, embeddings_model)
+        db = Chroma.from_texts(texts, embeddings_model, persist_directory="DB")
         print(f"count = {db._collection.count()}")
         db.persist()
         return {"status": "success", "message": "正常にaddされました"}
@@ -43,7 +42,10 @@ def read_text_chroma(query):
             )
         db = Chroma(persist_directory="DB", embedding_function=embeddings_model)
         results = db.similarity_search_with_score(query, 3)
+        
+        page_contents = [result[0].page_content for result in results]
+        
         print(f"count = {db._collection.count()}")
-        return results
+        return page_contents
     except Exception as e:
         return str(e)
