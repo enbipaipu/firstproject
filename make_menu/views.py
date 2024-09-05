@@ -39,7 +39,6 @@ def result(request):
         query = cheaper + question + question
         recipe = read_text_chroma(query)
         
-        
         # .envファイルの内容を読み込みます
         load_dotenv()
         
