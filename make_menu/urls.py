@@ -12,4 +12,3 @@ urlpatterns = [
    path('scrape/', views.scrape, name='scrape'),
 
 ]
-
