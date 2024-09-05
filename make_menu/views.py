@@ -2,13 +2,24 @@ from django.shortcuts import render, redirect
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+
+import csv
+from .models import Average
+from django.http import HttpResponse
+from django.conf import settings
+
 from .function.scrape import scrape_cookpad
+
 
 
 # Create your views here.
 def index(request):
+    # 冷蔵庫DBから食材を取得
     ingredientsInRefrigerator = ["ニンジン", "玉ねぎ", "レタス"]
+    
+    # (API-平均)の値を返す
     CheaperFoods = ["じゃがいも(-20円)", "キャベツ(-15円)", "ナス(-30円)"]
+    
     request = request
     context = {"text": "hello world",
         "refrigerator": ingredientsInRefrigerator,
@@ -70,6 +81,49 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
+
+    
+    
+def read_csv(request):
+    # プロジェクトのベースディレクトリを取得
+    base_dir = settings.BASE_DIR
+    file_path = os.path.join(base_dir, "make_menu", "csv", "merged_avg.csv")
+    
+    try:
+        with open(file_path, newline="", encoding="utf-8") as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader)  # ヘッダーをスキップ
+            for row in reader:
+                if len(row) < 14:
+                    return HttpResponse(f"CSVファイルの行に不足している列があります。行: {row}")
+                
+                # 空文字列を0に変換
+                def to_decimal(value):
+                    return float(value) if value else 0
+                
+                # 新規作成または更新
+                obj, created = Average.objects.update_or_create(
+                    code=row[0],
+                    defaults={
+                        'name': row[1],
+                        'price_01': to_decimal(row[2]),
+                        'price_02': to_decimal(row[3]),
+                        'price_03': to_decimal(row[4]),
+                        'price_04': to_decimal(row[5]),
+                        'price_05': to_decimal(row[6]),
+                        'price_06': to_decimal(row[7]),
+                        'price_07': to_decimal(row[8]),
+                        'price_08': to_decimal(row[9]),
+                        'price_09': to_decimal(row[10]),
+                        'price_10': to_decimal(row[11]),
+                        'price_11': to_decimal(row[12]),
+                        'price_12': to_decimal(row[13]),
+                    }
+                )
+            return HttpResponse("CSVファイルのインポートに成功しました。")
+    except FileNotFoundError:
+        return HttpResponse("指定されたCSVファイルが見つかりませんでした。")
+
 
 def scrape(request):
     if request.method == 'POST':
