@@ -131,7 +131,6 @@ def read_csv(request):
     except FileNotFoundError:
         return HttpResponse("指定されたCSVファイルが見つかりませんでした。")
 
-
 def create(request):
         result = create_chroma()
         message = result["status"] +":"+ result["message"]
