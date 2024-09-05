@@ -1,11 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+
 import csv
 from .models import Average
 from django.http import HttpResponse
 from django.conf import settings
+
+from .function.scrape import scrape_cookpad
+
+
 
 # Create your views here.
 def index(request):
@@ -76,6 +81,7 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
+
     
     
 def read_csv(request):
@@ -117,3 +123,22 @@ def read_csv(request):
             return HttpResponse("CSVファイルのインポートに成功しました。")
     except FileNotFoundError:
         return HttpResponse("指定されたCSVファイルが見つかりませんでした。")
+
+
+def scrape(request):
+    if request.method == 'POST':
+        # フォームから入力されたテキストを取得
+        input_text = request.POST.get('input_text')
+        
+        if input_text:
+            # スクレイピング関数を呼び出し
+            scraped_recipes = scrape_cookpad(input_text)
+            
+            if scraped_recipes:
+                # 各要素をHTMLとしてテンプレートに渡す
+                return render(request, 'make_menu/scrape.html', {'recipes': scraped_recipes})
+            else:
+                return render(request, 'make_menu/scrape.html', {'error': 'データが取得できませんでした。'})
+    
+    # フォームを表示
+    return render(request, 'make_menu/scrape.html')
