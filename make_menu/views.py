@@ -69,4 +69,18 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
+
+import markdown2
+
+def my_view(request):
+    markdown_text = """
+    # Sample Markdown
+    This is a paragraph with **bold** text and *italic* text.
     
+    - List item 1
+    - List item 2
+    - List item 3
+    """
+
+    html_output = markdown.markdown(markdown_text)
+    return render(request, 'make_menu/result.html', {'html_output': html_output})
