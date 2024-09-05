@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フォームページ</title>
+</head>
+<body>
+    <h1>テキストを入力してください</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="input_text">料理を検索してください:</label>
+        <input type="text" name="input_text" id="input_text">
+        <button type="submit">検索</button>
+    </form>
+    <div>
+        {% if recipes %}
+            <h2>検索結果:</h2>
+            <ul>
+            {% for recipe in recipes %}
+                <li>{{ recipe|safe }}</li>
+            {% endfor %}
+            </ul>
+        {% elif error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <p>検索結果がありません。</p>
+        {% endif %}
+    </div>
+</body>
+</html>

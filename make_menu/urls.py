@@ -6,5 +6,6 @@ app_name = "make_menu"
 urlpatterns = [
    path("", views.index, name="index"),
    path("result/", views.result, name="result"),
+   path('scrape/', views.scrape, name='scrape'),
 ]
 
