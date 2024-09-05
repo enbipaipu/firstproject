@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["8e804244e22b411b84cc82fa4989fa59.vfs.cloud9.us-east-1.amazonaws.com", '127.0.0.1']
 
+
 # Application definition
 
 INSTALLED_APPS = [
