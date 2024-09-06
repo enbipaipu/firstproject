@@ -2,6 +2,7 @@
 <html lang="ja">
 
 <head>
+    {% load static %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -9,9 +10,28 @@
 
     <title>Result Page</title>
     <link rel="stylesheet" href="/firstproject/make_menu/templates/make_menu/css/result.css">
+    <style >
+        .image-text-container {
+            display: flex;
+            align-items: center;
+            padding: 0 0 0 10vw;
+        }
+        
+        h5 {
+            font-weight: bold;
+            margin: 0;
+            padding-top: 25px;
+            padding-left: 0px; 
+            padding-bottom: 5px;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="image-text-container" >
+        <img src="{% static 'make_menu/20240905150859.png' %}" alt="My image" width="35" height="50">
+        <h5>arrot</h5>
+    </div>
 
     {% if res %}
     <div class="container">
