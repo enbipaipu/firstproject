@@ -141,14 +141,23 @@ def add_text(request):
     text = []
     try:
         base_dir = settings.BASE_DIR
-        file_path = os.path.join(base_dir, "make_menu", "recipe", "いちご_scraped_data.txt")
-        with open(file_path) as f:
-            for line in f:
-                print(type(line))
-                text.append(line)
+        recipe_dir = os.path.join(base_dir, "make_menu", "recipe2")  # recipe2フォルダを指定
+
+        # recipe2フォルダ内の全てのファイルを取得
+        for file_name in os.listdir(recipe_dir):
+            file_path = os.path.join(recipe_dir, file_name)
+
+            # ファイルかどうかを確認（ディレクトリが含まれている可能性があるため）
+            if os.path.isfile(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        text.append(line)
+
+        # 処理したテキストを使って、次の処理を行う
         result = add_text_chroma(text)
-        message = result["status"] +":"+ result["message"]
+        message = result["status"] + ":" + result["message"]
         return HttpResponse(message)
+    
     except FileNotFoundError:
         return HttpResponse("指定されたtextファイルが見つかりませんでした。")
 

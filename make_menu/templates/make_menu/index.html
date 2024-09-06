@@ -79,19 +79,19 @@
             border: none;
             outline: none;
             font-weight: normal;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 4px #9f6b22;
         }
-        
-        .food-item:hover {
-            font-weight: bold;
-            background-color: #F6B352;
+
+        .food-item:active {
+            box-shadow: 0 2px #9f6b22;
+            transform: translateY(2px); /* 要素が少し下に動く */
         }
 
         .food-item.selected {
-            font-weight: bold;
-            background-color: #32CD32;
+            background-color: #f39410;
+            box-shadow: 0 2px #9f6b22; /* 押し込まれた状態の影 */
+            transform: translateY(2px); /* 押し込まれた状態 */
         }
-
 
         /* 横並びで折り返すスタイル */
         .food-container {
@@ -119,7 +119,7 @@
         }
 
         .submit-button:hover {
-            background-color: #4C4C4C;
+            background-color: #32CD32;
             padding-bottom: 5px;
             padding-top: 5px;
         }
