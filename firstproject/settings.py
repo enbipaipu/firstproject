@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-15k#enp2+-6*xx72c$pvic#tbv02qrxyin_u5drs262c*vejst
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["8e804244e22b411b84cc82fa4989fa59.vfs.cloud9.us-east-1.amazonaws.com", '127.0.0.1']
+
+ALLOWED_HOSTS = ["8e804244e22b411b84cc82fa4989fa59.vfs.cloud9.us-east-1.amazonaws.com", '127.0.0.1', "*"]
+
 
 
 # Application definition
@@ -45,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -118,6 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

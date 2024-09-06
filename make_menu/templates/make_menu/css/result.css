@@ -1,0 +1,73 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+p {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+}
+
+/* Container for the Menu */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for Menu Items */
+.menu-list {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    background-color: #e8f0fe;
+    margin: 15px 0;
+    padding: 15px;
+    border-left: 5px solid #4285f4;
+    border-radius: 5px;
+}
+
+.menu-item h2 {
+    color: #4285f4;
+    margin-bottom: 10px;
+}
+
+.menu-item p {
+    margin-bottom: 10px;
+}
+
+.menu-item ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.menu-item ul li {
+    margin-bottom: 5px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    .menu-item h2 {
+        font-size: 20px;
+    }
+}
