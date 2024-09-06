@@ -6,12 +6,16 @@ body {
     padding: 20px;
     margin: 0;
     font-weight: 700;
-    font-style:normal;
-    font-size:16px;
+    font-style: normal;
+    font-size: 16px;
 }
 
 h5 {
     font-weight: bold;
+    margin: 0;
+    padding-top: 25px;
+    padding-left: 0px; 
+    padding-bottom: 5px;
 }
 
 h6 {
@@ -21,6 +25,12 @@ h6 {
     line-height: 1.4;
 }
 
+/* 画像とテキストを横並びにするためのスタイル */
+.image-text-container {
+    display: flex;
+    align-items: center;
+}
+
 /* パソコン版のスタイル（デフォルト） */
 @media (min-width: 577px) {
     body {
@@ -28,7 +38,7 @@ h6 {
         padding-right: 20%;
     }
 }
-        
+
 /* 詳細情報入力欄のスタイル */
 input[name="detail"] {
     width: 100%;
@@ -51,6 +61,7 @@ input[name="detail"] {
     border: none;
     outline: none;
     font-weight: normal;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .food-item.selected {
@@ -73,7 +84,7 @@ input[name="detail"] {
 .submit-button {
     background-color: #F6B352;
     color: white;
-    border: none; /* ボーダーを削除 */
+    border: none;
     padding: 0px;
     font-size: 1rem;
     cursor: pointer;
@@ -81,13 +92,14 @@ input[name="detail"] {
     transition: background-color 0.3s ease;
     display: block;
     width: 100%;
-    margin-top: 20px; /* submitボタンの上に空白を追加 */
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .submit-button:hover {
     background-color: #4C4C4C;
 }
     
-    .submit-button {
-        margin-top: 15px; /* スマートフォンでは少し小さめのマージン */
-    }
+.submit-button {
+    margin-top: 15px; /* スマートフォンでは少し小さめのマージン */
+}

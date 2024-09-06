@@ -22,7 +22,7 @@ def index(request):
     CheaperFoods = diff()
     
     request = request
-    context = {"text": "hello world",
+    context = {"text": "arrot",
         "refrigerator": ingredientsInRefrigerator,
         "cheaper": CheaperFoods,
     }
