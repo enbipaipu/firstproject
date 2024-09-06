@@ -159,7 +159,7 @@
         {% endif %}
     </div>
 
-    {% if refrigerator and cheaper %}
+    {% if refrigerator  %}
     <form action="{% url 'make_menu:result' %}" method="post">
         {% csrf_token %}
 
