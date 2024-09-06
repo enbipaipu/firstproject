@@ -169,7 +169,7 @@
         <input type="hidden" id="input1" name="select_cheaper" value="">
         <div class="food-container">
             {% for food in cheaper %}
-            <span class="food-item" data-selected="false" onclick="toggleInputValue(this, '{{ food }}', 'input1')">{{ food }}</span>
+            <span class="food-item" data-selected="false" onclick="toggleInputValue(this, '{{ food.0 }}', 'input1')">{{ food.0 }}:{{ food.1 }}円</span>
             {% endfor %}
         </div>
 
