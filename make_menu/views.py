@@ -1,13 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
+import csv
+from .models import Average
+from django.http import HttpResponse
+from django.conf import settings
+
+from .function.scrape import scrape_cookpad
+from .function.db import create_chroma, read_text_chroma, add_text_chroma
+from .function.func import diff
+
 
 # Create your views here.
 def index(request):
+    # 冷蔵庫DBから食材を取得
     ingredientsInRefrigerator = ["ニンジン", "玉ねぎ", "レタス"]
-    CheaperFoods = ["じゃがいも(-20円)", "キャベツ(-15円)", "ナス(-30円)"]
+    
+    # (API-平均)の値を返す
+    CheaperFoods = diff()
+    
     request = request
     context = {"text": "arrot",
         "refrigerator": ingredientsInRefrigerator,
@@ -22,6 +35,9 @@ def result(request):
         cheaper = request.POST.get('select_cheaper')
         ingredients = request.POST.get('select_ingredients')
         question = request.POST.get('detail')
+        
+        query = cheaper + question + question
+        recipe = read_text_chroma(query)
         
         # .envファイルの内容を読み込みます
         load_dotenv()
@@ -41,6 +57,8 @@ def result(request):
         冷蔵庫の中の食材: {ingredients}
         detail: {question}
         食材はなるべく多く使用してください。
+        これらのレシピも必要であれば、使用してください。
+        {recipe}
         """
         
         Input = """回答のフォーマットは以下のようにしてください。料理を３つ提案してください。
@@ -56,7 +74,7 @@ def result(request):
         ----
         見やすくするための空白行
         """
-        response = llm.invoke(template.format(cheaper=cheaper, ingredients=ingredients, question=question))
+        response = llm.invoke(template.format(cheaper=cheaper, ingredients=ingredients, question=question, recipe=recipe))
         
         output_by_simple_llm = response.content
         
@@ -69,4 +87,94 @@ def result(request):
         }
 
     return render(request, 'make_menu/result.html', context)
+
     
+    
+def read_csv(request):
+    # プロジェクトのベースディレクトリを取得
+    base_dir = settings.BASE_DIR
+    file_path = os.path.join(base_dir, "make_menu", "csv", "merged_avg.csv")
+    
+    try:
+        with open(file_path, newline="", encoding="utf-8") as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader)  # ヘッダーをスキップ
+            for row in reader:
+                if len(row) < 14:
+                    return HttpResponse(f"CSVファイルの行に不足している列があります。行: {row}")
+                
+                # 空文字列を0に変換
+                def to_decimal(value):
+                    return float(value) if value else 0
+                
+                # 新規作成または更新
+                Average.objects.update_or_create(
+                    code=row[0],
+                    defaults={
+                        'name': row[1],
+                        'g_per_price': to_decimal(row[2]),
+                        'price_01': to_decimal(row[3]),
+                        'price_02': to_decimal(row[4]),
+                        'price_03': to_decimal(row[5]),
+                        'price_04': to_decimal(row[6]),
+                        'price_05': to_decimal(row[7]),
+                        'price_06': to_decimal(row[8]),
+                        'price_07': to_decimal(row[9]),
+                        'price_08': to_decimal(row[10]),
+                        'price_09': to_decimal(row[11]),
+                        'price_10': to_decimal(row[12]),
+                        'price_11': to_decimal(row[13]),
+                        'price_12': to_decimal(row[14]),
+                    }
+                )
+            return HttpResponse("CSVファイルのインポートに成功しました。")
+    except FileNotFoundError:
+        return HttpResponse("指定されたCSVファイルが見つかりませんでした。")
+
+def create(request):
+        result = create_chroma()
+        message = result["status"] +":"+ result["message"]
+        return HttpResponse(message)
+
+
+def add_text(request):
+    text = []
+    try:
+        base_dir = settings.BASE_DIR
+        file_path = os.path.join(base_dir, "make_menu", "recipe", "いちご_scraped_data.txt")
+        with open(file_path) as f:
+            for line in f:
+                print(type(line))
+                text.append(line)
+        result = add_text_chroma(text)
+        message = result["status"] +":"+ result["message"]
+        return HttpResponse(message)
+    except FileNotFoundError:
+        return HttpResponse("指定されたtextファイルが見つかりませんでした。")
+
+
+def read_text(request):
+    text = "とまととチーズを使った。子供が喜ぶクリスマス料理"
+    result = read_text_chroma(text)
+    print(result)
+    return HttpResponse(result)
+    
+    
+def scrape(request):
+    if request.method == 'POST':
+        # フォームから入力されたテキストを取得
+        input_text = request.POST.get('input_text')
+        
+        if input_text:
+            # スクレイピング関数を呼び出し
+            scraped_recipes = scrape_cookpad(input_text)
+            
+            if scraped_recipes:
+                # 各要素をHTMLとしてテンプレートに渡す
+                return render(request, 'make_menu/scrape.html', {'recipes': scraped_recipes})
+            else:
+                return render(request, 'make_menu/scrape.html', {'error': 'データが取得できませんでした。'})
+    
+    # フォームを表示
+    return render(request, 'make_menu/scrape.html')
+

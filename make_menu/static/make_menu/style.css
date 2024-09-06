@@ -98,5 +98,8 @@ input[name="detail"] {
 
 .submit-button:hover {
     background-color: #4C4C4C;
+}
     
+.submit-button {
+    margin-top: 15px; /* スマートフォンでは少し小さめのマージン */
 }

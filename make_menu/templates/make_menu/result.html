@@ -4,6 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../static/make_menu/result.css">
+
     <title>Result Page</title>
     <link rel="stylesheet" href="/firstproject/make_menu/templates/make_menu/css/result.css">
 </head>
@@ -11,8 +14,9 @@
 <body>
 
     {% if res %}
-    <h1>Results</h1>
-    <p>{{ res }}</p>
+    <div class="container">
+        {{ res|safe }}
+    </div>
     {% else %}
     <h1>No Data</h1>
     <p>No input data was provided.</p>
